@@ -18,6 +18,31 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [resetSent, setResetSent] = useState(false);
+
+  async function handleForgotPassword() {
+    if (!email) {
+      setError("Digite seu e-mail antes de solicitar a redefinição.");
+      return;
+    }
+    setError(null);
+    setLoading(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/auth/callback?next=/reset-password`,
+      });
+      if (error) {
+        setError("Não foi possível enviar o e-mail. Tente novamente.");
+      } else {
+        setResetSent(true);
+      }
+    } catch {
+      setError("Erro inesperado. Tente novamente.");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -93,6 +118,21 @@ export default function LoginPage() {
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? "Entrando..." : "Entrar"}
             </Button>
+
+            {resetSent ? (
+              <p className="text-sm text-green-600 bg-green-50 border border-green-200 rounded-md px-3 py-2 text-center">
+                E-mail de redefinição enviado! Verifique sua caixa de entrada.
+              </p>
+            ) : (
+              <button
+                type="button"
+                onClick={handleForgotPassword}
+                disabled={loading}
+                className="w-full text-sm text-indigo-600 hover:text-indigo-800 text-center mt-1 disabled:opacity-50"
+              >
+                Esqueci minha senha
+              </button>
+            )}
           </form>
         </CardContent>
       </Card>
