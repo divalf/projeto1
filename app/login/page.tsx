@@ -57,8 +57,8 @@ export default function LoginPage() {
         router.push("/dashboard");
         router.refresh();
       }
-    } catch {
-      setError("Erro inesperado. Tente novamente.");
+    } catch (err) {
+      setError("Erro: " + String(err));
     } finally {
       setLoading(false);
     }
