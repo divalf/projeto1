@@ -21,6 +21,8 @@ export default function LoginPage() {
   const [resetSent, setResetSent] = useState(false);
 
   async function handleForgotPassword() {
+    console.log("SUPABASE_URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+    console.log("ANON_KEY:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.slice(0, 20));
     if (!email) {
       setError("Digite seu e-mail antes de solicitar a redefinição.");
       return;
